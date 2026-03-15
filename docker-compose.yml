@@ -1,49 +1,47 @@
 services:
   tubearchivist:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tubearchivist
     restart: unless-stopped
-    image: bbilly1/tubearchivist
-    ports:
-      - 8000:8000
-    volumes:
-      - media:/youtube
-      - cache:/cache
     environment:
-      - ES_URL=http://archivist-es:9200     # needs protocol e.g. http and port
-      - REDIS_CON=redis://archivist-redis:6379
+      - ES_URL=http://archivist-es:9200
+      - REDIS_CON=redis://archivist-redis:6379/1
       - HOST_UID=1000
       - HOST_GID=1000
-      - TA_HOST=http://tubearchivist.local:8000  # set your host name with protocol and port
-      - TA_USERNAME=tubearchivist           # your initial TA credentials
-      - TA_PASSWORD=verysecret              # your initial TA credentials
-      - ELASTIC_PASSWORD=verysecret         # set password for Elasticsearch
-      - TZ=America/New_York                 # set your time zone
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
-      interval: 2m
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+      - TA_HOST=tubearchivist.jeyamir.lab
+      - TA_USERNAME=admin
+      - TA_PASSWORD=changeme
+      - ELASTIC_PASSWORD=changeme
+      - TZ=Asia/Kuala_Lumpur
+      - TA_COOKIES_FILE=/app/cache/youtube-cookies.txt
+    volumes:
+      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/media:/youtube'
+      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/cache:/app/cache'
     depends_on:
       - archivist-es
       - archivist-redis
+      - pot-provider
+
   archivist-redis:
-    image: redis
+    image: redis/redis-stack-server
     container_name: archivist-redis
     restart: unless-stopped
     expose:
       - "6379"
     volumes:
-      - redis:/data
+      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/redis:/data'
     depends_on:
       - archivist-es
+
   archivist-es:
-    image: bbilly1/tubearchivist-es         # only for amd64, or use official es 8.19.0
+    image: bbilly1/tubearchivist-elastic:latest
     container_name: archivist-es
     restart: unless-stopped
     environment:
-      - "ELASTIC_PASSWORD=verysecret"       # matching Elasticsearch password
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ELASTIC_PASSWORD=changeme"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "xpack.security.enabled=true"
       - "discovery.type=single-node"
       - "path.repo=/usr/share/elasticsearch/data/snapshot"
@@ -52,12 +50,13 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - es:/usr/share/elasticsearch/data    # check for permission error when using bind mount, see readme
+      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/es:/usr/share/elasticsearch/data'
     expose:
       - "9200"
 
-volumes:
-  media:
-  cache:
-  redis:
-  es:
+  pot-provider:
+    image: jeyamir/bgutil-ytdlp-pot-provider:latest
+    container_name: pot-provider
+    restart: unless-stopped
+    expose:
+      - "4416"
