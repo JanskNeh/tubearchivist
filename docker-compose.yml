@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: tubearchivist
     ports:
-      - "8000:8000"
+      - "8001:8000"
     restart: unless-stopped
     environment:
       - ES_URL=http://archivist-es:9200
