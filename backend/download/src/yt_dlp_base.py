@@ -49,6 +49,14 @@ class YtWrap:
         if self.config:
             self._add_cookie()
             self._add_potoken_url()
+    
+    # --- SOVEREIGN AI LAB BYPASS ---
+        # Force Deno and HTTP POT provider globally across all operations
+        self.obs['javascript_runtimes'] = ['deno']
+        if 'extractor_args' not in self.obs:
+            self.obs['extractor_args'] = {}
+        self.obs['extractor_args']['youtubepot-bgutilhttp'] = {'base_url': ['http://pot-provider:4416']}
+        # -------------------------------
 
         if getattr(settings, "DEBUG", False):
             del self.obs["quiet"]

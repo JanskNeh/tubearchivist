@@ -94,4 +94,19 @@ EXPOSE 8000
 
 RUN chmod +x ./run.sh
 
+# --- SOVEREIGN AI LAB DEPENDENCIES ---
+# 1. Install Deno globally for JS challenges
+RUN apt-get update && apt-get install -y curl unzip && \
+    curl -fsSL https://deno.land/x/install/install.sh | sh && \
+    mv /root/.deno/bin/deno /usr/local/bin/deno && \
+    chmod +x /usr/local/bin/deno && \
+    rm -rf /var/lib/apt/lists/*
+ENV PATH="/usr/local/bin:${PATH}"
+
+# 2. Targeted upgrade for yt-dlp and the plugin
+RUN python3 -m pip install --user --no-cache-dir --upgrade --force-reinstall yt-dlp bgutil-ytdlp-pot-provider
+# -------------------------------------
+
+# (Keep the original CMD or ENTRYPOINT that was already at the bottom here)
+
 CMD ["/bin/tini", "--", "./run.sh"]
