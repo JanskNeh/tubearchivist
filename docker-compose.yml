@@ -1,7 +1,7 @@
 services:
   tubearchivist:
     build:
-      context: 
+      context: .
       dockerfile: Dockerfile
     container_name: tubearchivist
     ports:
