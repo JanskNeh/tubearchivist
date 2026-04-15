@@ -19,12 +19,21 @@ services:
       - TZ=Asia/Kuala_Lumpur
       - TA_COOKIES_FILE=/app/cache/youtube-cookies.txt
     volumes:
-      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/media:/youtube'
-      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/cache:/app/cache'
+      - '/home/jeyamir/tubearchivist/media:/youtube'
+      - '/home/jeyamir/tubearchivist/cache:/app/cache'
     depends_on:
-      - archivist-es
-      - archivist-redis
-      - pot-provider
+      archivist-es:
+        condition: service_started
+      archivist-redis:
+        condition: service_healthy
+      pot-provider:
+        condition: service_started
+    labels:
+      - coolify.managed=true
+      - traefik.enable=true
+      - traefik.http.routers.ta-custom.rule=Host(`tubearchivist.jeyamir.lab`)
+      - traefik.http.routers.ta-custom.entrypoints=http
+      - traefik.http.services.ta-custom.loadbalancer.server.port=8000
 
   archivist-redis:
     image: redis/redis-stack-server
@@ -33,7 +42,7 @@ services:
     expose:
       - "6379"
     volumes:
-      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/redis:/data'
+      - '/home/jeyamir/tubearchivist/redis:/data'
     depends_on:
       - archivist-es
 
@@ -52,7 +61,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - '/mnt/d/__a_p_p_s/jellyfin/media/tubearchivist/es:/usr/share/elasticsearch/data'
+      - '/home/jeyamir/tubearchivist/es:/usr/share/elasticsearch/data'
     expose:
       - "9200"
 
