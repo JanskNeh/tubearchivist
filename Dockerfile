@@ -1,7 +1,4 @@
 # --- SOVEREIGN AI LAB DEPENDENCIES ---
-# ADD THIS LINE AT THE VERY TOP
-FROM janskneh/tubearchivist:latest
-
 # Now your existing commands will work
 USER root
 
