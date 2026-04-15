@@ -1,8 +1,4 @@
 # --- SOVEREIGN AI LAB DEPENDENCIES ---
-# Now your existing commands will work
-FROM vault.lab:3000/jeyamir-lab/tubearchivist-jeyamir-lab:latest
-
-USER root
 
 # 1. Purge the old hardcoded plugin and install the updated 1.3.1 version exactly where the API looks for it
 RUN rm -rf /opt/yt_plugins/bgutil/* && \
