@@ -1,5 +1,7 @@
 # --- SOVEREIGN AI LAB DEPENDENCIES ---
+FROM bbilly1/tubearchivist:latest
 
+USER root
 # 1. Purge the old hardcoded plugin and install the updated 1.3.1 version exactly where the API looks for it
 RUN rm -rf /opt/yt_plugins/bgutil/* && \
     python3 -m pip install --upgrade --target /opt/yt_plugins/bgutil bgutil-ytdlp-pot-provider
