@@ -1,5 +1,9 @@
 # --- SOVEREIGN AI LAB DEPENDENCIES ---
-# Deno is natively installed on line 39.
+# ADD THIS LINE AT THE VERY TOP
+FROM janskneh/tubearchivist:latest
+
+# Now your existing commands will work
+USER root
 
 # 1. Purge the old hardcoded plugin and install the updated 1.3.1 version exactly where the API looks for it
 RUN rm -rf /opt/yt_plugins/bgutil/* && \
