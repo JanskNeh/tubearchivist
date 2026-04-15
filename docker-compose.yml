@@ -41,6 +41,13 @@ services:
     restart: unless-stopped
     expose:
       - "6379"
+    # --- ADD THIS SECTION ---
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    # ------------------------
     volumes:
       - '/home/jeyamir/tubearchivist/redis:/data'
     depends_on:
