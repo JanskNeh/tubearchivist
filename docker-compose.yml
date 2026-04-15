@@ -22,18 +22,9 @@ services:
       - '/home/jeyamir/tubearchivist/media:/youtube'
       - '/home/jeyamir/tubearchivist/cache:/app/cache'
     depends_on:
-      archivist-es:
-        condition: service_started
-      archivist-redis:
-        condition: service_healthy
-      pot-provider:
-        condition: service_started
-    labels:
-      - coolify.managed=true
-      - traefik.enable=true
-      - traefik.http.routers.ta-custom.rule=Host(`tubearchivist.jeyamir.lab`)
-      - traefik.http.routers.ta-custom.entrypoints=http
-      - traefik.http.services.ta-custom.loadbalancer.server.port=8000
+      - archivist-es
+      - archivist-redis
+      - pot-provider
 
   archivist-redis:
     image: redis/redis-stack-server
